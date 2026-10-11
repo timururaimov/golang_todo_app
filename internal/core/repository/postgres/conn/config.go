@@ -1,0 +1,34 @@
+package core_postgers_pool
+
+import (
+	"fmt"
+	"time"
+
+	"github.com/kelseyhightower/envconfig"
+)
+
+type Config struct {
+	Host     string        `envconfig:"HOST" required:"true"`
+	Port     string        `envconfig:"PORT" default:"5432"`
+	User     string        `envconfig:"USER" required:"true"`
+	Password string        `envconfig:"PASSWORD" required:"true"`
+	Database string        `envconfig:"DB" required:"true"`
+	Timeout  time.Duration `envconfig:"TIMEOUT" required:"true"`
+}
+
+func NEwConfig() (Config, error) {
+	var config Config
+
+	if err := envconfig.Process("POSTGRES", &config); err != nil {
+		return Config{}, fmt.Errorf("procces envconfig: %w", err)
+	}
+	return config, nil
+}
+
+func NewConfigMust() Config {
+	config, err := NEwConfig()
+	if err != nil {
+		panic(fmt.Errorf("get env config: %w", err))
+	}
+	return config
+}
