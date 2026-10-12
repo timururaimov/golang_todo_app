@@ -1,7 +1,6 @@
 package core_http_middleware
 
 import (
-	"context"
 	"net/http"
 	"time"
 
@@ -39,9 +38,32 @@ func Logger(log *core_logger.Logger) MiddleWare {
 				zap.String("url", r.URL.String()),
 			)
 
-			ctx := context.WithValue(r.Context(), "log", l)
+			ctx := core_logger.ToContext(r.Context(), l)
 
 			next.ServeHTTP(w, r.WithContext(ctx))
+		})
+	}
+}
+
+func Trace() MiddleWare {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ctx := r.Context()
+			log := core_logger.FromeContext(ctx)
+			rw := core_http_respone.NewResponseWriter(w)
+			before := time.Now()
+			log.Debug(
+				">>>> incoming HTTP Request",
+				zap.Time("time", before.UTC()),
+			)
+
+			next.ServeHTTP(rw, r)
+
+			log.Debug(
+				"<<<<Done HTTP Request",
+				zap.Int("status_code", rw.GetStatusCode()),
+				zap.Duration("letency", time.Since(before)),
+			)
 		})
 	}
 }
@@ -63,29 +85,6 @@ func Panic() MiddleWare {
 				}
 			}()
 			next.ServeHTTP(w, r)
-		})
-	}
-}
-
-func Trace() MiddleWare {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			ctx := r.Context()
-			log := core_logger.FromeContext(ctx)
-			rw := core_http_respone.NewResponseWriter(w)
-			before := time.Now()
-			log.Debug(
-				">>>> incoming HTTP Request",
-				zap.Time("time", before.UTC()),
-			)
-
-			next.ServeHTTP(rw, r)
-
-			log.Debug(
-				"<<<<Done HTTP Request",
-				zap.Int("status_code", rw.GetStatusCodeOrPanic()),
-				zap.Duration("letency", time.Since(before)),
-			)
 		})
 	}
 }

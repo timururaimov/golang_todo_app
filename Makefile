@@ -22,7 +22,7 @@ env-cleanup:
 	@read -p "Очистка всех volume-файлов окружения? Опасность потери данных [y/N]: " ans; \
 	if [ "$$ans" = "y" ] || [ "$$ans" = "Y" ]; then \
 		docker compose down todoapp-postgres port-forward && \
-		rm -rf out && \
+		rm -rf ${PROJECT_ROOT}/out/pgdata && \
 		mkdir -p out && \
 		echo "Файлы окружения очищены!"; \
 	else \
@@ -65,4 +65,4 @@ todoapp-run:
 	export POSTGRES_HOST=localhost && \
 	export POSTGRES_PORT=$${POSTGRES_FORWARD_PORT:-5433} && \
 	go mod tidy && \
-	go run cmd/todoapp/main.go
+	go run ${PROJECT_ROOT}/cmd/todoapp/main.go
