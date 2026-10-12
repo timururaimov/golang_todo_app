@@ -10,7 +10,6 @@ import (
 	core_http_request "github.com/timururaimov/golang_todo_app/internal/core/request"
 	core_http_respone "github.com/timururaimov/golang_todo_app/internal/core/transport/http/respone"
 	core_http_types "github.com/timururaimov/golang_todo_app/internal/core/transport/http/types"
-	core_http_utils "github.com/timururaimov/golang_todo_app/internal/core/transport/http/utils"
 )
 
 type PatchUserRequest struct {
@@ -49,7 +48,7 @@ func (h *UsersHTTPHandler) PatchUser(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromeContext(ctx)
 	responseHandler := core_http_respone.NewHTTPResponseHandler(log, rw)
-	userId, err := core_http_utils.GetIntPathValue(r, "id")
+	userId, err := core_http_request.GetIntPathValue(r, "id")
 	if err != nil {
 		responseHandler.ErrorResponse(
 			err,

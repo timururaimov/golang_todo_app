@@ -33,7 +33,6 @@ func main() {
 	}
 	defer logger.Close()
 
-
 	pool, err := core_postgers_pool.NewConnectionPool(
 		ctx,
 		core_postgers_pool.NewConfigMust(),
@@ -47,19 +46,28 @@ func main() {
 	usersService := users_service.NewUsersService(usersRepository)
 	usersTransportHttp := users_transport_http.NewUsersHTTPHandler(usersService)
 
-
 	httpSever := core_http_server.NewHTTPServer(
 		core_http_server.NewConfigMust(),
 		logger,
 		core_http_middleware.RequestId(),
 		core_http_middleware.Logger(logger),
-		core_http_middleware.Panic(),
 		core_http_middleware.Trace(),
+		core_http_middleware.Panic(),
 	)
-	apiVersionRouter := core_http_server.NewAPIVersionRouter(core_http_server.ApiVersion1)
-	apiVersionRouter.ReqisterRoutes(usersTransportHttp.Routes()...)
+	apiVersionRouterV1 := core_http_server.NewAPIVersionRouter(core_http_server.ApiVersion1)
+	apiVersionRouterV1.ReqisterRoutes(usersTransportHttp.Routes()...)
 
-	httpSever.RegisterAPIRouters(apiVersionRouter)
+	// apiVersionRouterV2 := core_http_server.NewAPIVersionRouter(
+	// 	core_http_server.ApiVersion2,
+	// 	какой новый midlware в новый верссиии api
+	// 	core_http_middleware.Panic(),
+	// )
+	// apiVersionRouterV2.ReqisterRoutes(usersTransportHttp.Routes()...)
+
+	httpSever.RegisterAPIRouters(
+		apiVersionRouterV1,
+		// apiVersionRouterV2
+	)
 
 	if err := httpSever.Run(ctx); err != nil {
 		logger.Error("HTTP server run error", zap.Error(err))

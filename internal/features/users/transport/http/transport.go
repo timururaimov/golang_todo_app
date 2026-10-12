@@ -59,6 +59,10 @@ func (h *UsersHTTPHandler) Routes() []core_http_server.Rout {
 			Method:  http.MethodGet,
 			Path:    "/users",
 			Handler: h.GetUsers,
+			// MiddllWare: []core_http_middleware.MiddleWare{
+			// 	какой та middlwar толко для этого http handlera
+			// 	core_http_middleware.Panic()
+			// },
 		}, {
 			Method:  http.MethodGet,
 			Path:    "/users/{id}",
