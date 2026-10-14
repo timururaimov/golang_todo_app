@@ -58,7 +58,7 @@ func (r *UsersRepository) GetUsers(
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("next rows: %w", err)
 	}
-	userDomains := userDomainsFromeModul(userModels)
+	userDomains := userDomainsFromeModel(userModels)
 
 	return userDomains, nil
 }

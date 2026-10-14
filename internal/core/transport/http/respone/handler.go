@@ -92,7 +92,7 @@ func (h *HTTPResponseHandler) errorResponse(
 	h.rw.WriteHeader(statusCode)
 
 	response := map[string]string{
-		"messege": msg,
+		"message": msg,
 		"error":   err.Error(),
 	}
 
