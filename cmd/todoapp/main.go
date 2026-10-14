@@ -6,18 +6,27 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	core_logger "github.com/timururaimov/golang_todo_app/internal/core/logger"
 	core_postgers_pool "github.com/timururaimov/golang_todo_app/internal/core/repository/postgres/conn"
 	core_http_middleware "github.com/timururaimov/golang_todo_app/internal/core/transport/http/middleware"
 	core_http_server "github.com/timururaimov/golang_todo_app/internal/core/transport/http/server"
+	tasks_postgres_repository "github.com/timururaimov/golang_todo_app/internal/features/tasks/repository/postgres"
+	tasks_service "github.com/timururaimov/golang_todo_app/internal/features/tasks/service"
+	tasks_transport_http "github.com/timururaimov/golang_todo_app/internal/features/tasks/transport/http"
 	users_postgres_repository "github.com/timururaimov/golang_todo_app/internal/features/users/repository/postgres"
 	users_service "github.com/timururaimov/golang_todo_app/internal/features/users/service"
 	users_transport_http "github.com/timururaimov/golang_todo_app/internal/features/users/transport/http"
 	"go.uber.org/zap"
 )
 
+var (
+	timeZone = time.UTC
+)
+
 func main() {
+	time.Local = timeZone
 
 	ctx, cancel := signal.NotifyContext(
 		context.Background(),
@@ -41,10 +50,19 @@ func main() {
 		logger.Fatal("faild to connection pool", zap.Error(err))
 	}
 	defer pool.Close()
+
+	logger.Debug("aplicatation timeZone", zap.Any("zone", timeZone))
+	//Users
 	logger.Debug("intializing feature", zap.String("featur", "users"))
 	usersRepository := users_postgres_repository.NewUsersRepository(pool)
 	usersService := users_service.NewUsersService(usersRepository)
 	usersTransportHttp := users_transport_http.NewUsersHTTPHandler(usersService)
+
+	//Tasks
+	logger.Debug("intializing feature", zap.String("featur", "tasks"))
+	tasksRepository := tasks_postgres_repository.NewTasksRepository(pool)
+	tasksSrevice := tasks_service.NewTasksService(tasksRepository)
+	tasksTransportHttp := tasks_transport_http.NewTasksHTTPHandler(tasksSrevice)
 
 	httpSever := core_http_server.NewHTTPServer(
 		core_http_server.NewConfigMust(),
@@ -56,6 +74,7 @@ func main() {
 	)
 	apiVersionRouterV1 := core_http_server.NewAPIVersionRouter(core_http_server.ApiVersion1)
 	apiVersionRouterV1.ReqisterRoutes(usersTransportHttp.Routes()...)
+	apiVersionRouterV1.ReqisterRoutes(tasksTransportHttp.Routes()...)
 
 	// apiVersionRouterV2 := core_http_server.NewAPIVersionRouter(
 	// 	core_http_server.ApiVersion2,
