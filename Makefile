@@ -3,7 +3,7 @@ export
 
 export PROJECT_ROOT=$(shell pwd)
 
-.PHONY: env-up env-down env-port-forward env-port-close env-cleanup 
+.PHONY: env-up env-down env-port-forward env-port-close env-cleanup todoapp-deploy todoapp-stop ps
 
 env-up:
 	mkdir -p out/pgdata
@@ -73,6 +73,15 @@ logs-cleanup:
 todoapp-run:
 	@export LOGGER_FOLDER=${PROJECT_ROOT}/out/logs && \
 	export POSTGRES_HOST=localhost && \
-	export POSTGRES_PORT=$${POSTGRES_FORWARD_PORT:-5433} && \
+	export POSTGRES_PORT=$${POSTGRES_FORWARD_PORT:-5432} && \
 	go mod tidy && \
 	go run ${PROJECT_ROOT}/cmd/todoapp/main.go
+
+todoapp-deploy:
+	@docker compose up -d --build todoapp
+
+todoapp-stop:
+	@docker compose stop todoapp
+
+ps:
+	@docker compose ps
