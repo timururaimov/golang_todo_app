@@ -83,5 +83,14 @@ todoapp-deploy:
 todoapp-stop:
 	@docker compose stop todoapp
 
+swagger-gen:
+	@docker compose run --rm swagger \
+		init \
+		-g cmd/todoapp/main.go \
+		-o docs \
+		--parseInternal \
+		--parseDependency
+
+
 ps:
 	@docker compose ps

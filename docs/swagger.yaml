@@ -1,0 +1,626 @@
+basePath: /api/v1
+definitions:
+  github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse:
+    properties:
+      error:
+        example: ful error text
+        type: string
+      message:
+        example: short human-readble message
+        type: string
+    type: object
+  internal_features_statistics_transport_http.GetStatisticsResponse:
+    properties:
+      task_average_completed_time:
+        type: string
+      task_comleted:
+        type: integer
+      task_completed_rate:
+        type: number
+      task_creted:
+        type: integer
+    type: object
+  internal_features_tasks_transport_http.CreatTaskRequest:
+    properties:
+      author_user_id:
+        type: integer
+      description:
+        maxLength: 1000
+        minLength: 1
+        type: string
+      title:
+        maxLength: 100
+        minLength: 1
+        type: string
+    required:
+    - author_user_id
+    - title
+    type: object
+  internal_features_tasks_transport_http.CreatTaskResponse:
+    properties:
+      author_user_id:
+        example: 2
+        type: integer
+      completed:
+        example: false
+        type: boolean
+      completed_at:
+        example: "null"
+        type: string
+      created_at:
+        example: "2026-02-26T10:30:00Z"
+        type: string
+      description:
+        example: Сделат домашку в 6:00
+        type: string
+      id:
+        example: 5
+        type: integer
+      title:
+        example: Сделат домашку
+        type: string
+      version:
+        example: 1
+        type: integer
+    type: object
+  internal_features_tasks_transport_http.DTOTaskResponse:
+    properties:
+      author_user_id:
+        example: 2
+        type: integer
+      completed:
+        example: false
+        type: boolean
+      completed_at:
+        example: "null"
+        type: string
+      created_at:
+        example: "2026-02-26T10:30:00Z"
+        type: string
+      description:
+        example: Сделат домашку в 6:00
+        type: string
+      id:
+        example: 5
+        type: integer
+      title:
+        example: Сделат домашку
+        type: string
+      version:
+        example: 1
+        type: integer
+    type: object
+  internal_features_tasks_transport_http.GetTaskResponse:
+    properties:
+      author_user_id:
+        example: 2
+        type: integer
+      completed:
+        example: false
+        type: boolean
+      completed_at:
+        example: "null"
+        type: string
+      created_at:
+        example: "2026-02-26T10:30:00Z"
+        type: string
+      description:
+        example: Сделат домашку в 6:00
+        type: string
+      id:
+        example: 5
+        type: integer
+      title:
+        example: Сделат домашку
+        type: string
+      version:
+        example: 1
+        type: integer
+    type: object
+  internal_features_tasks_transport_http.PatchTasResponse:
+    properties:
+      author_user_id:
+        example: 2
+        type: integer
+      completed:
+        example: false
+        type: boolean
+      completed_at:
+        example: "null"
+        type: string
+      created_at:
+        example: "2026-02-26T10:30:00Z"
+        type: string
+      description:
+        example: Сделат домашку в 6:00
+        type: string
+      id:
+        example: 5
+        type: integer
+      title:
+        example: Сделат домашку
+        type: string
+      version:
+        example: 1
+        type: integer
+    type: object
+  internal_features_tasks_transport_http.PatchTaskRequest:
+    properties:
+      completed:
+        type: boolean
+      description:
+        example: Сделат Домащку до 6:00
+        type: string
+      title:
+        example: Сделат Домашку
+        type: string
+    type: object
+  internal_features_users_transport_http.CreatUserRequest:
+    properties:
+      full_name:
+        example: Иван Иванов
+        maxLength: 100
+        minLength: 3
+        type: string
+      phone_number:
+        example: "+996789866"
+        maxLength: 100
+        minLength: 3
+        type: string
+    required:
+    - full_name
+    type: object
+  internal_features_users_transport_http.CreatUserResponse:
+    properties:
+      full_name:
+        example: Иван Иванов
+        type: string
+      id:
+        example: 5
+        type: integer
+      phone_number:
+        example: "+9967478888"
+        type: string
+      version:
+        example: 1
+        type: integer
+    type: object
+  internal_features_users_transport_http.DTOUserResponse:
+    properties:
+      full_name:
+        example: Иван Иванов
+        type: string
+      id:
+        example: 5
+        type: integer
+      phone_number:
+        example: "+9967478888"
+        type: string
+      version:
+        example: 1
+        type: integer
+    type: object
+  internal_features_users_transport_http.GetUserReasponse:
+    properties:
+      full_name:
+        example: Иван Иванов
+        type: string
+      id:
+        example: 5
+        type: integer
+      phone_number:
+        example: "+9967478888"
+        type: string
+      version:
+        example: 1
+        type: integer
+    type: object
+  internal_features_users_transport_http.PatchUserDTOResponse:
+    properties:
+      full_name:
+        example: Иван Иванов
+        type: string
+      id:
+        example: 5
+        type: integer
+      phone_number:
+        example: "+9967478888"
+        type: string
+      version:
+        example: 1
+        type: integer
+    type: object
+  internal_features_users_transport_http.PatchUserRequest:
+    properties:
+      full_name:
+        example: Максим Максимович
+        type: string
+      phone_number:
+        example: "+996455663"
+        type: string
+    type: object
+host: 121.0.0.1:8080
+info:
+  contact: {}
+  description: Todo-app REST API sheme
+  title: Golang ToDoApp
+  version: "1.0"
+paths:
+  /statistics:
+    get:
+      description: |-
+        Возвращает количество созданных и выполненных задач, процент выполнения и среднее время выполнения.
+        Можно отфильтровать статистику по автору и периоду создания задач. Для периода укажите обе даты: from включительно, to не включительно.
+      parameters:
+      - description: ID пользователя-автора задач
+        in: query
+        name: author_user_id
+        type: integer
+      - description: Начало периода включительно, формат YYYY-MM-DD
+        example: "2026-01-01"
+        in: query
+        name: from
+        type: string
+      - description: Конец периода не включительно, формат YYYY-MM-DD
+        example: "2026-02-01"
+        in: query
+        name: to
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Статистика задач
+          schema:
+            $ref: '#/definitions/internal_features_statistics_transport_http.GetStatisticsResponse'
+        "400":
+          description: Некорректные параметры запроса или диапазон дат
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+      summary: Получить статистику задач
+      tags:
+      - statistics
+  /tasks:
+    get:
+      description: Возвращает задачи с необязательной фильтрацией по автору и пагинацией.
+      parameters:
+      - description: ID пользователя-автора задачи
+        in: query
+        name: author_user_id
+        type: integer
+      - description: Максимальное количество задач
+        in: query
+        name: limit
+        type: integer
+      - description: Количество задач, которое нужно пропустить
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список задач
+          schema:
+            items:
+              $ref: '#/definitions/internal_features_tasks_transport_http.DTOTaskResponse'
+            type: array
+        "400":
+          description: Некорректные параметры запроса
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+      summary: Получить список задач
+      tags:
+      - tasks
+    post:
+      consumes:
+      - application/json
+      description: Создаёт новую задачу для указанного пользователя.
+      parameters:
+      - description: Данные новой задачи
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_tasks_transport_http.CreatTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Задача создана
+          schema:
+            $ref: '#/definitions/internal_features_tasks_transport_http.CreatTaskResponse'
+        "400":
+          description: Некорректные данные запроса
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+      summary: Создать задачу
+      tags:
+      - tasks
+  /tasks/{id}:
+    delete:
+      description: Удаляет задачу по её ID.
+      parameters:
+      - description: ID задачи
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: Задача удалена
+        "400":
+          description: Некорректный ID задачи
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+        "404":
+          description: Задача не найдена
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+      summary: Удалить задачу
+      tags:
+      - tasks
+    get:
+      description: Возвращает задачу по её ID.
+      parameters:
+      - description: ID задачи
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Задача найдена
+          schema:
+            $ref: '#/definitions/internal_features_tasks_transport_http.GetTaskResponse'
+        "400":
+          description: Некорректный ID задачи
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+        "404":
+          description: Задача не найдена
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+      summary: Получить задачу
+      tags:
+      - tasks
+    patch:
+      consumes:
+      - application/json
+      description: |-
+        Частично изменяет заголовок, описание и/или статус задачи.
+        #### Логика обновления полей (three-state logic)
+        1. **Поле не передано** `description`— значение в БД не меняется.
+        2. **Передано значение**`"description":"Утром пробежка в 6:00"` — поле получает новое значение.
+        3. **Передан null**  `"description": null`— очищает поле в БД (Set to nul)
+        `title` не может быть null. `completed` должен быть true или false, но не null.
+      parameters:
+      - description: ID задачи
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Поля задачи для изменения
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_tasks_transport_http.PatchTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Задача изменена
+          schema:
+            $ref: '#/definitions/internal_features_tasks_transport_http.PatchTasResponse'
+        "400":
+          description: Некорректный ID или данные запроса
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+        "404":
+          description: Задача не найдена
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+        "409":
+          description: Конфликт
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+      summary: Изменить задачу
+      tags:
+      - tasks
+  /users:
+    get:
+      description: Возвращает список пользователей с необязательной пагинацией.
+      parameters:
+      - description: Максимальное количество пользователей
+        in: query
+        name: limit
+        type: integer
+      - description: Количество пользователей, которое нужно пропустить
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список пользователей
+          schema:
+            items:
+              $ref: '#/definitions/internal_features_users_transport_http.DTOUserResponse'
+            type: array
+        "400":
+          description: Некорректные limit или offset
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+      summary: Получить список пользователей
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Создаёт пользователя с именем и необязательным номером телефона.
+      parameters:
+      - description: Данные нового пользователя
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_users_transport_http.CreatUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Пользователь создан
+          schema:
+            $ref: '#/definitions/internal_features_users_transport_http.CreatUserResponse'
+        "400":
+          description: Некорректные данные запроса
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+      summary: Создать пользователя
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      description: Удаляет пользователя по его ID.
+      parameters:
+      - description: ID пользователя
+        example: 5
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: Пользователь удалён
+        "400":
+          description: Некорректный ID пользователя
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+        "404":
+          description: Пользователь не найден
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+      summary: Удалить пользователя
+      tags:
+      - users
+    get:
+      description: Возвращает пользователя по его ID.
+      parameters:
+      - description: ID пользователя
+        example: 5
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Пользователь найден
+          schema:
+            $ref: '#/definitions/internal_features_users_transport_http.GetUserReasponse'
+        "400":
+          description: Некорректный ID пользователя
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+        "404":
+          description: Пользователь не найден
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+      summary: Получить пользователя
+      tags:
+      - users
+    patch:
+      consumes:
+      - application/json
+      description: |-
+        Частично изменяет имя и/или номер телефона. Неуказанные поля остаются без изменений; номер телефона можно передать как null, чтобы очистить его.
+        #### Логика обнавление полей (Three-state logic)
+        1. **Поле не передано** `phone_number` игрорируется,значение в бд не меняется
+        2. **Явно передано значение** `"phone_number":"+9961122666"` - устонавливает новый номер телефона в БД
+        2. **Пердан null** `"phone_number":null` - очишает поле в БД (set to null)
+        Ограничение `full_name` не может быт выстален как null
+      parameters:
+      - description: ID пользователя
+        example: 5
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Поля пользователя для изменения
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_users_transport_http.PatchUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Пользователь изменён
+          schema:
+            $ref: '#/definitions/internal_features_users_transport_http.PatchUserDTOResponse'
+        "400":
+          description: Некорректный ID или данные запроса
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+        "404":
+          description: Пользователь не найден
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+        "409":
+          description: Конфликт
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_timururaimov_golang_todo_app_internal_core_transport_http_respone.ErrorResponse'
+      summary: Изменить пользователя
+      tags:
+      - users
+swagger: "2.0"

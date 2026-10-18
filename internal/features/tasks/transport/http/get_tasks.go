@@ -11,6 +11,18 @@ import (
 
 type GetTasksResponse []DTOTaskResponse
 
+// GetTasks godoc
+// @Summary Получить список задач
+// @Description Возвращает задачи с необязательной фильтрацией по автору и пагинацией.
+// @Tags tasks
+// @Produce json
+// @Param author_user_id query int false "ID пользователя-автора задачи"
+// @Param limit query int false "Максимальное количество задач"
+// @Param offset query int false "Количество задач, которое нужно пропустить"
+// @Success 200 {array} DTOTaskResponse "Список задач"
+// @Failure 400 {object} core_http_respone.ErrorResponse "Некорректные параметры запроса"
+// @Failure 500 {object} core_http_respone.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /tasks [get]
 func (h *TasksHTTPHandler) GetTasks(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromeContext(ctx)

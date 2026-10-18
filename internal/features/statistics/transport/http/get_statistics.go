@@ -18,6 +18,19 @@ type GetStatisticsResponse struct {
 	TaskAverageCompletedTime *string  `json:"task_average_completed_time"`
 }
 
+// GetStatistics godoc
+// @Summary Получить статистику задач
+// @Description Возвращает количество созданных и выполненных задач, процент выполнения и среднее время выполнения.
+// @Description Можно отфильтровать статистику по автору и периоду создания задач. Для периода укажите обе даты: from включительно, to не включительно.
+// @Tags statistics
+// @Produce json
+// @Param author_user_id query int false "ID пользователя-автора задач"
+// @Param from query string false "Начало периода включительно, формат YYYY-MM-DD" example(2026-01-01)
+// @Param to query string false "Конец периода не включительно, формат YYYY-MM-DD" example(2026-02-01)
+// @Success 200 {object} GetStatisticsResponse "Статистика задач"
+// @Failure 400 {object} core_http_respone.ErrorResponse "Некорректные параметры запроса или диапазон дат"
+// @Failure 500 {object} core_http_respone.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /statistics [get]
 func (h *StatisticsHTTPHandler) GetStatistics(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromeContext(ctx)

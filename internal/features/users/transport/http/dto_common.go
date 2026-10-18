@@ -3,10 +3,10 @@ package users_transport_http
 import "github.com/timururaimov/golang_todo_app/internal/core/domain"
 
 type DTOUserResponse struct {
-	Id          int     `json:"id"`
-	Version     int     `json:"version"`
-	FullName    string  `json:"full_name"`
-	PhoneNumber *string `json:"phone_number"`
+	Id          int     `json:"id" example:"5"`
+	Version     int     `json:"version" example:"1"`
+	FullName    string  `json:"full_name" example:"Иван Иванов"`
+	PhoneNumber *string `json:"phone_number" example:"+9967478888"`
 }
 
 func userDTOFromDomain(user domain.User) DTOUserResponse {

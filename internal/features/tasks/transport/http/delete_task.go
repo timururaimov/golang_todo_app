@@ -8,6 +8,16 @@ import (
 	core_http_respone "github.com/timururaimov/golang_todo_app/internal/core/transport/http/respone"
 )
 
+// DeleteTask godoc
+// @Summary Удалить задачу
+// @Description Удаляет задачу по её ID.
+// @Tags tasks
+// @Param id path int true "ID задачи"
+// @Success 204 "Задача удалена"
+// @Failure 400 {object} core_http_respone.ErrorResponse "Некорректный ID задачи"
+// @Failure 404 {object} core_http_respone.ErrorResponse "Задача не найдена"
+// @Failure 500 {object} core_http_respone.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /tasks/{id} [delete]
 func (h *TasksHTTPHandler) DeleteTask(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromeContext(ctx)

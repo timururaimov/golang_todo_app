@@ -13,8 +13,8 @@ import (
 )
 
 type PatchUserRequest struct {
-	FullName    core_http_types.Nullable[string] `json:"full_name"`
-	PhoneNumber core_http_types.Nullable[string] `json:"phone_number"`
+	FullName    core_http_types.Nullable[string] `json:"full_name" swaggertype:"string" example:"Максим Максимович"`
+	PhoneNumber core_http_types.Nullable[string] `json:"phone_number" swaggertype:"string" example:"+996455663"`
 }
 
 func (r *PatchUserRequest) Validate() error {
@@ -44,6 +44,25 @@ func (r *PatchUserRequest) Validate() error {
 
 type PatchUserDTOResponse DTOUserResponse
 
+// PatchUser godoc
+// @Summary Изменить пользователя
+// @Description Частично изменяет имя и/или номер телефона. Неуказанные поля остаются без изменений; номер телефона можно передать как null, чтобы очистить его.
+// @Description #### Логика обнавление полей (Three-state logic)
+// @Description 1. **Поле не передано** `phone_number` игрорируется,значение в бд не меняется
+// @Description 2. **Явно передано значение** `"phone_number":"+9961122666"` - устонавливает новый номер телефона в БД
+// @Description 2. **Пердан null** `"phone_number":null` - очишает поле в БД (set to null)
+// @Description Ограничение `full_name` не может быт выстален как null
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int true "ID пользователя" example(5)
+// @Param request body PatchUserRequest true "Поля пользователя для изменения"
+// @Success 200 {object} PatchUserDTOResponse "Пользователь изменён"
+// @Failure 400 {object} core_http_respone.ErrorResponse "Некорректный ID или данные запроса"
+// @Failure 404 {object} core_http_respone.ErrorResponse "Пользователь не найден"
+// @Failure 409 {object} core_http_respone.ErrorResponse "Конфликт
+// @Failure 500 {object} core_http_respone.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /users/{id} [patch]
 func (h *UsersHTTPHandler) PatchUser(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromeContext(ctx)

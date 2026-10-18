@@ -11,6 +11,17 @@ import (
 
 type GetUsersReasponse []DTOUserResponse
 
+// GetUsers godoc
+// @Summary Получить список пользователей
+// @Description Возвращает список пользователей с необязательной пагинацией.
+// @Tags users
+// @Produce json
+// @Param limit query int false "Максимальное количество пользователей"
+// @Param offset query int false "Количество пользователей, которое нужно пропустить"
+// @Success 200 {array} DTOUserResponse "Список пользователей"
+// @Failure 400 {object} core_http_respone.ErrorResponse "Некорректные limit или offset"
+// @Failure 500 {object} core_http_respone.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /users [get]
 func (h *UsersHTTPHandler) GetUsers(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromeContext(ctx)
