@@ -10,6 +10,17 @@ import (
 
 type GetUserReasponse DTOUserResponse
 
+// GetUser godoc
+// @Summary Получить пользователя
+// @Description Возвращает пользователя по его ID.
+// @Tags users
+// @Produce json
+// @Param id path int true "ID пользователя" example(5)
+// @Success 200 {object} GetUserReasponse "Пользователь найден"
+// @Failure 400 {object} core_http_respone.ErrorResponse "Некорректный ID пользователя"
+// @Failure 404 {object} core_http_respone.ErrorResponse "Пользователь не найден"
+// @Failure 500 {object} core_http_respone.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /users/{id} [get]
 func (h *UsersHTTPHandler) GetUser(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromeContext(ctx)

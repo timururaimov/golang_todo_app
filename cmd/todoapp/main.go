@@ -23,8 +23,15 @@ import (
 	users_service "github.com/timururaimov/golang_todo_app/internal/features/users/service"
 	users_transport_http "github.com/timururaimov/golang_todo_app/internal/features/users/transport/http"
 	"go.uber.org/zap"
+
+	_ "github.com/timururaimov/golang_todo_app/docs"
 )
 
+// @title       Golang ToDoApp
+// @version     1.0
+// @description Todo-app REST API sheme
+// @host        121.0.0.1:8080
+// @BasePath    /api/v1
 func main() {
 	cfg := core_config.NewConfigMust()
 	time.Local = cfg.TimeZone
@@ -74,6 +81,7 @@ func main() {
 	httpSever := core_http_server.NewHTTPServer(
 		core_http_server.NewConfigMust(),
 		logger,
+		core_http_middleware.CORS(),
 		core_http_middleware.RequestId(),
 		core_http_middleware.Logger(logger),
 		core_http_middleware.Trace(),
@@ -95,6 +103,7 @@ func main() {
 		apiVersionRouterV1,
 		// apiVersionRouterV2
 	)
+	httpSever.RegisterSwagger()
 
 	if err := httpSever.Run(ctx); err != nil {
 		logger.Error("HTTP server run error", zap.Error(err))

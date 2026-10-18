@@ -11,12 +11,23 @@ import (
 
 // DTO для creatUser
 type CreatUserRequest struct {
-	FullName    string  `json:"full_name" validate:"required,min=3,max=100"`
-	PhoneNumber *string `json:"phone_number" validate:"omitempty,min=3,max=100,startswith=+"`
+	FullName    string  `json:"full_name" validate:"required,min=3,max=100" example:"Иван Иванов"`
+	PhoneNumber *string `json:"phone_number" validate:"omitempty,min=3,max=100,startswith=+" example:"+996789866"`
 }
 
 type CreatUserResponse DTOUserResponse
 
+// CreatUser godoc
+// @Summary Создать пользователя
+// @Description Создаёт пользователя с именем и необязательным номером телефона.
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param request body CreatUserRequest true "Данные нового пользователя"
+// @Success 201 {object} CreatUserResponse "Пользователь создан"
+// @Failure 400 {object} core_http_respone.ErrorResponse "Некорректные данные запроса"
+// @Failure 500 {object} core_http_respone.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /users [post]
 func (h *UsersHTTPHandler) CreatUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromeContext(ctx)
