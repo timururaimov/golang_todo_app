@@ -15,6 +15,7 @@ services:
       POSTGRES_TIMEOUT: ${POSTGRES_TIMEOUT:-10s}
       LOGGER_LEVEL: ${LOGGER_LEVEL:-INFO}
       TIME_ZONE: ${TIME_ZONE:-UTC}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-}
       LOGGER_FOLDER: /app/out/logs
     volumes:
       - ./out/logs:/app/out/logs

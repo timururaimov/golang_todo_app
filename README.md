@@ -119,8 +119,11 @@ curl -X POST http://localhost:8080/api/v1/tasks \
 | `LOGGER_LEVEL` | Уровень логирования | `DEBUG` |
 | `LOGGER_FOLDER` | Каталог файлов логов | обязательно задать |
 | `TIME_ZONE` | Часовой пояс | `UTC` |
+| `CORS_ALLOWED_ORIGINS` | Разрешённые origin через запятую | пустой список |
 
 При ручном запуске через `make todoapp-run` Makefile устанавливает каталог логов в `out/logs`, хост PostgreSQL в `localhost` и использует порт из `POSTGRES_FORWARD_PORT` (или `5432`).
+
+Укажите в `CORS_ALLOWED_ORIGINS` origin веб-клиента, например `https://example.com`. Для нескольких адресов используйте список через запятую. В origin указываются схема, домен и при необходимости порт, без пути. Пустой список запрещает браузерные cross-origin запросы.
 
 ## Структура проекта
 
