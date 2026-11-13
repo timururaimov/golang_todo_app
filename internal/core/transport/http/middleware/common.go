@@ -2,6 +2,8 @@ package core_http_middleware
 
 import (
 	"net/http"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -12,29 +14,73 @@ import (
 
 const requestIdHEader = "X-Request-ID"
 
+const corsAllowedOriginsEnv = "CORS_ALLOWED_ORIGINS"
+
+var corsAllowedMethods = map[string]struct{}{
+	http.MethodGet: {}, http.MethodPost: {}, http.MethodPatch: {},
+	http.MethodDelete: {}, http.MethodOptions: {},
+}
+
+var corsAllowedHeaders = map[string]struct{}{
+	"content-type": {}, "authorization": {},
+}
+
 func CORS() MiddleWare {
+	allowedOrigins := parseAllowedOrigins(os.Getenv(corsAllowedOriginsEnv))
+
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			allowedOrigins := map[string]struct{}{
-				"http://localhost:8080":    {},
-				"http://3.105.21.186:8080": {},
-			}
-
 			origin := r.Header.Get("Origin")
-
-			if _, ok := allowedOrigins[origin]; ok {
+			_, originAllowed := allowedOrigins[origin]
+			if originAllowed {
+				w.Header().Add("Vary", "Origin")
 				w.Header().Set("Access-Control-Allow-Origin", origin)
 				w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS")
 				w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-
 			}
 			if r.Method == http.MethodOptions {
-				w.WriteHeader(http.StatusOK)
+				if !originAllowed || !validPreflight(r) {
+					http.Error(w, "CORS preflight request denied", http.StatusForbidden)
+					return
+				}
+				w.WriteHeader(http.StatusNoContent)
 				return
 			}
 			next.ServeHTTP(w, r)
 		})
 	}
+}
+
+func parseAllowedOrigins(value string) map[string]struct{} {
+	origins := make(map[string]struct{})
+	for _, origin := range strings.Split(value, ",") {
+		origin = strings.TrimSpace(origin)
+		if origin == "" || origin == "*" {
+			continue
+		}
+		origins[origin] = struct{}{}
+	}
+	return origins
+}
+
+func validPreflight(r *http.Request) bool {
+	method := r.Header.Get("Access-Control-Request-Method")
+	if method == "" {
+		return false
+	}
+	if _, ok := corsAllowedMethods[method]; !ok {
+		return false
+	}
+	for _, header := range strings.Split(r.Header.Get("Access-Control-Request-Headers"), ",") {
+		header = strings.TrimSpace(strings.ToLower(header))
+		if header == "" {
+			continue
+		}
+		if _, ok := corsAllowedHeaders[header]; !ok {
+			return false
+		}
+	}
+	return true
 }
 
 func RequestId() MiddleWare {
